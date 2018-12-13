@@ -27,8 +27,8 @@ async def haste_paste(e):
     await e.edit('`Paste successful! Check it here: `' + hastebin.post(text))
 
 
-@bot.on(events.NewMessage(outgoing=True, pattern='^.log( silent)?$'))
-@bot.on(events.MessageEdited(outgoing=True, pattern='^.log( silent)?$'))
+@bot.on(events.NewMessage(outgoing=True, pattern='^.log'))
+@bot.on(events.MessageEdited(outgoing=True, pattern='^.log'))
 async def log(e):
  if not e.text[0].isalpha() and e.text[0]!="!" and e.text[0]!="/" and e.text[0]!="#" and e.text[0]!="@":
     textx=await e.get_reply_message()
@@ -40,16 +40,10 @@ async def log(e):
         message = str(message[4:])
     if LOGGER:
         await (await e.get_reply_message()).forward_to(LOGGER_GROUP)
-        markstuf=False
-        try:
-            if 'silent' in e.pattern_match.group(1):
-                markstuf=True
-        except TypeError:
-            markstuf=False
-        if markstuf == False:
-            await e.edit("`Logged Successfully`\nYou can also use `.log silent` to prevent this message being sent.")
-        else:
-            await e.delete()
+        await e.edit("`Logged Successfully`")
+    else:
+        await e.edit("`This feature requires Logging to be enabled!`")
+    await e.delete()
 
 @bot.on(events.NewMessage(outgoing=True, pattern='^.speed$'))
 @bot.on(events.MessageEdited(outgoing=True, pattern='^.speed$'))
@@ -124,13 +118,6 @@ async def chatidgetter(e):
         await e.edit('Chat ID: `'+str(e.chat_id)+'`')
 
 
-@bot.on(events.NewMessage(outgoing=True,pattern='^.restart$'))
-@bot.on(events.MessageEdited(outgoing=True,pattern='^.restart$'))
-async def restart_the_bot(e):
-	await e.edit("`Thank You master! I am taking a break!`")
-    os.execl(sys.executable, sys.executable, *sys.argv)
-
-    
 @bot.on(events.NewMessage(outgoing=True,pattern='^.pingme$'))
 @bot.on(events.MessageEdited(outgoing=True,pattern='^.pingme$'))
 async def pingme(e):
@@ -139,8 +126,8 @@ async def pingme(e):
     await e.edit('`' + k.stdout.decode()[:-1] + '`')
 
 
-@bot.on(events.NewMessage(outgoing=True,pattern='^.shutdown( [0-9]+)?$'))
-@bot.on(events.MessageEdited(outgoing=True,pattern='^.shutdown( [0-9]+)?$'))
+@bot.on(events.NewMessage(outgoing=True,pattern='^.sleep( [0-9]+)?$'))
+@bot.on(events.MessageEdited(outgoing=True,pattern='^.sleep( [0-9]+)?$'))
 async def killdabot(e):
     if not e.text[0].isalpha():
         message = e.text
@@ -148,17 +135,17 @@ async def killdabot(e):
             await e.reply('Syntax: `.shutdown [seconds]`')
         else:
             counter=int(e.pattern_match.group(1))
-            await e.edit('`Goodbye *Windows XP shutdown sound*....`')
+            await e.edit('`I am sulking and snoozing....`')
             time.sleep(2)
-            await bot.send_message(LOGGER_GROUP,"You shutdown the bot for "+str(counter)+" seconds")
+            await bot.send_message(LOGGER_GROUP,"You put the bot to sleep for "+str(counter)+" seconds")
             time.sleep(counter)
 
-@bot.on(events.NewMessage(outgoing=True,pattern='^.real_shutdown$'))
-@bot.on(events.MessageEdited(outgoing=True,pattern='^.real_shutdown$'))
+@bot.on(events.NewMessage(outgoing=True,pattern='^.shutdown$'))
+@bot.on(events.MessageEdited(outgoing=True,pattern='^.shutdown$'))
 async def killdabot(e):
     if not e.text[0].isalpha():
-        await e.edit('`REALLY Goodbye *Windows XP shutdown sound*....`')
-        await bot.send_message(LOGGER_GROUP,"You REALLY shutdown the bot")
+        await e.edit('`Goodbye *Windows XP shutdown sound*....`')
+        await bot.send_message(LOGGER_GROUP,"`You are shutting me down. Goto console to start me up again.`")
         await bot.disconnect()
 
 @bot.on(events.NewMessage(outgoing=True,pattern='^.support$'))
@@ -194,7 +181,7 @@ async def sysdetails(e):
 @bot.on(events.MessageEdited(outgoing=True,pattern='^.botversion$'))
 async def bot_ver(e):
     if not e.text[0].isalpha() and e.text[0]!="!" and e.text[0]!="/" and e.text[0]!="#" and e.text[0]!="@":
-        await e.edit('`UserBot Version: Modular r2.07-b`')
+        await e.edit('`UserBot Version: Modular r2.07`')
 
 
 @bot.on(events.NewMessage(outgoing=True,pattern='^.userid$'))
@@ -216,4 +203,4 @@ async def chatidgetter(e):
                     name = '@' + message.forward.sender.username
                 else:
                     name = '*' + message.forward.sender.first_name + '*'
-            await e.edit('This beautiful person named {} has this amazing id: `{}`'.format(name, user_id))
+            await e.edit('**Name:** {} \n **User ID:** `{}`'.format(name, user_id))

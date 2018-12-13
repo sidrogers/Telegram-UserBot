@@ -79,59 +79,6 @@ async def spider(e):
             await bot.send_message(LOGGER_GROUP,str((await e.get_reply_message()).sender_id)+" was muted.")
 
 
-@bot.on(events.NewMessage(incoming=True,pattern="<triggerban>"))
-async def triggered_ban(e):
- if not e.text[0].isalpha() and e.text[0]!="!" and e.text[0]!="/" and e.text[0]!="#" and e.text[0]!="@":
-    message =e.text
-    ban_id=int(e.text[13:])
-    if e.sender_id in BRAIN_CHECKER:      #non-working module#
-        rights = ChannelBannedRights(
-                             until_date=None,
-                             view_messages=True,
-                             send_messages=True,
-                             send_media=True,
-                             send_stickers=True,
-                             send_gifs=True,
-                             send_games=True,
-                             send_inline=True,
-                             embed_links=True
-                             )
-        if ban_id in BRAIN_CHECKER:
-            await e.edit("`Sorry Master!`")
-            return
-        await e.edit("`Command from my Master!`")
-        time.sleep(5)
-        await bot(EditBannedRequest(e.chat_id,ban_id,rights))
-        await e.delete()
-        await bot.send_message(e.chat_id,"Job was done, Master! Gimme Cookies!")
-
-
-@bot.on(events.NewMessage(incoming=True,pattern="<triggermute>"))
-async def triggered_mute(e):
-    message =e.text
-    ban_id=int(e.text[14:])
-    if e.sender_id in BRAIN_CHECKER:
-        rights = ChannelBannedRights(
-                             until_date=None,
-                             view_messages=True,
-                             send_messages=True,
-                             send_media=True,
-                             send_stickers=True,       #non-working module#
-                             send_gifs=True,
-                             send_games=True,
-                             send_inline=True,
-                             embed_links=True
-                             )
-        if ban_id in BRAIN_CHECKER:
-            await e.edit("`Sorry Master!`")
-            return
-        await e.edit("`Command from my Master!`")
-        time.sleep(5)
-        await bot(EditBannedRequest(e.chat_id,(await e.get_reply_message()).sender_id,rights))
-        await e.delete()
-        await bot.send_file(e.chat_id,"Job was done, Master! Gimme Cookies!")
-
-
 @bot.on(events.NewMessage(outgoing=True, pattern='^.speak$'))
 @bot.on(events.MessageEdited(outgoing=True, pattern='^.speak$'))
 async def unmute(e):
